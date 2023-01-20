@@ -17,6 +17,11 @@ def nama():
 def getNama(nama):
   return "nama anda adalah: {}".format(nama);
 
+# render html
+@app.route('/mahasiswa')
+def getMahasiswa():
+  return "<h1>Data Mahasiswa</h1>"
+
 
 # auto reload
 # jalankan perintah ini di terminal/cmd
