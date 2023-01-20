@@ -41,6 +41,12 @@ def templateMahasiswa():
   kelas = "IF-4201"
   return render_template('mahasiswa.html', kelas=kelas)
 
+@app.route('/dosen')
+def getDosen():
+  hobbies = ['membaca', 'jalan-jalan', 'nonton']
+  return render_template('dosen.html', hobbies=hobbies)
+
+
 
 if __name__ == '__main__':
   app.run(debug=True)

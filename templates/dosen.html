@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>halaman dosen</title>
+</head>
+<body>
+	<h2>hello dosen</h2>
+	<p>hobi dosen</p>
+	<ul>
+		{% for hobby in hobbies %}
+			{% if hobby == "nonton" %}
+				<li><strong>{{ hobby }}<strong></li>
+			{% else %}
+				<li>{{ hobby }}</li>
+			{% endif %}
+		{% endfor %}
+	</ul>
+</body>
+</html>
