@@ -5,11 +5,11 @@
   <form action="{{ url_for('login') }}" method="POST">
       <div class="mb-3 mt-3">
       <label for="email" class="form-label">Email:</label>
-      <input type="email" class="form-control" placeholder="Email" name="email">
+      <input type="email" class="form-control" placeholder="Email" name="email" required autofocus autocomplete="off">
       </div>
       <div class="mb-3">
       <label for="pwd" class="form-label">Password:</label>
-      <input type="password" class="form-control" placeholder="Input password" name="password">
+      <input type="password" class="form-control" placeholder="Input password" name="password" required>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
   </form>
