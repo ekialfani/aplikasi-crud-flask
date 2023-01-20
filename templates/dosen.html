@@ -10,35 +10,23 @@
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">NIP</th>
+        <th scope="col">ID Dosen</th>
         <th scope="col">Nama Dosen</th>
+        <th scope="col">Universitas</th>
         <th scope="col">Jurusan</th>
         <th scope="col">Aksi</th>
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Faqih</td>
-        <td>Telkom University</td>
-        <td>Information System</td>
-        <td><button type="button" class="btn btn-warning btn-sm">Edit</button> <button type="button" class="btn btn-danger btn-sm">Delete</button></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Aulia</td>
-        <td>Telkom University</td>
-        <td>Informatics</td>
-        <td><button type="button" class="btn btn-warning btn-sm">Edit</button> <button type="button" class="btn btn-danger btn-sm">Delete</button></td> 
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Ali Fauzi</td>
-        <td>Brawijaya University</td>
-        <td>Informatics</td>
-        <td><button type="button" class="btn btn-warning btn-sm">Edit</button> <button type="button" class="btn btn-danger btn-sm">Delete</button></td> 
-      </tr>
+      {% for d in dosen %}
+        <tr>
+          <td>{{ d[0] }}</td>
+          <td>{{ d[1] }}</td>
+          <td>{{ d[2] }}</td>
+          <td>{{ d[3] }}</td>
+          <td><button type="button" class="btn btn-warning btn-sm">Edit</button> <button type="button" class="btn btn-danger btn-sm">Delete</button></td>
+        </tr>
+      {% endfor %}
     </tbody>
   </table>
 {% endif %}
