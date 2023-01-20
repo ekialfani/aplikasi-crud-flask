@@ -31,9 +31,15 @@ def getMahasiswa():
 
 
 # template
+# jinja template
+# {% ... %} untuk Pernyataan seperti IF dan FOR
+# {{ ... }} untuk mencetak variabel/ekspresi ke template
+# {# ... #} untuk Komentar yang tidak disertakan 
+
 @app.route('/templates')
 def templateMahasiswa():
-  return render_template('mahasiswa.html')
+  kelas = "IF-4201"
+  return render_template('mahasiswa.html', kelas=kelas)
 
 
 if __name__ == '__main__':
