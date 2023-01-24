@@ -1,5 +1,6 @@
 # url_for untuk handel URL dan redirect untuk mengarahkan ke route tertentu
 from flask import Flask, render_template, url_for, redirect, request, session, flash
+from werkzeug.utils import secure_filename
 import pymysql
 
 
@@ -10,7 +11,7 @@ app.secret_key = 'asdfghjkl12345fdsa_fdsakld8rweodfds'
 host = 'localhost'
 user = 'root'
 password = ''
-db = 'universitas'
+db = 'bookshelves'
 mysql = pymysql.connect(host=host,user=user,password=password,db=db,)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -20,94 +21,111 @@ def login():
       flash('Invalid username/password', 'danger')
     else:
       session['logged_in'] = True
-      flash('Login successful', 'success')
-      return redirect(url_for('dosen'))
+      flash('Berhasil masuk', 'success')
+      return redirect(url_for('dashboard'))
   return render_template('login.html')
 
 @app.route('/logout')
 def logout():
   session.pop('logged_in', None)
-  flash('Logout successful', 'success')
+  flash('Berhasil keluar', 'success')
   return redirect(url_for('login'))
 
-@app.route('/dosen')
-def dosen():
+@app.route('/dashboard')
+def dashboard():
   cursor = mysql.cursor()
-  cursor.execute(''' SELECT * FROM dosen ''')
-  dosen = cursor.fetchall()
+  cursor.execute(''' SELECT * FROM shelf_one ''')
+  books = cursor.fetchall()
   cursor.close()
-  return render_template('dosen.html', dosen=dosen)
+  return render_template('dashboard.html', books=books)
 
 
-@app.route('/dosen/tambah', methods=['GET', 'POST'])
-def tambahDosen():
+@app.route('/book/add', methods=['GET', 'POST'])
+def addBook():
   if request.method == 'GET':
-    return render_template('dosen/add.html')
+    return render_template('book/add.html')
   else:
-    nama = request.form['nama']
-    univ = request.form['univ']
-    jurusan = request.form['jurusan']
+    title = request.form['title']
+    author = request.form['author']
+    published = request.form['published']
+    file = request.files['file']
+    file.save(secure_filename(file.filename))
+    file = file.filename
 
     cursor = mysql.cursor()
-    cursor.execute(''' INSERT INTO dosen(nama, univ, jurusan) VALUES(%s,%s,%s) ''',(nama,univ,jurusan))
+    cursor.execute(''' INSERT INTO shelf_one(title, author, published, file) VALUES(%s,%s,%s,%s) ''',(title,author,published, file))
     mysql.commit()
     cursor.close()
-    flash('Data added successfully', 'success')
-    return redirect(url_for('dosen'))
-  return render_template('dosen.html')
+    flash('Data berhasil ditambahkan', 'success')
+    return redirect(url_for('dashboard'))
+  return render_template('dashboard.html')
 
 
-@app.route('/dosen/edit/<int:id>', methods=['GET', 'POST'])
-def editdosen(id):
-  if request.method == 'GET':  
+@app.route('/book/edit/<int:id>', methods=['GET', 'POST'])
+def editBook(id):
+  if request.method == 'GET':
     cursor = mysql.cursor()
     cursor.execute('''
     SELECT * 
-    FROM dosen 
-    WHERE dosen_id=%s''', (id, ))
-    dosen = cursor.fetchone()
+    FROM shelf_one 
+    WHERE book_id=%s''', (id, ))
+    book = cursor.fetchone()
     cursor.close()
 
-    return render_template('dosen/edit.html', dosen=dosen)
+    return render_template('book/edit.html', book=book)
   else:
-    nama = request.form['nama']
-    univ = request.form['univ']
-    jurusan = request.form['jurusan']
+    title = request.form['title']
+    author = request.form['author']
+    published = request.form['published']
 
     cursor = mysql.cursor()
     cursor.execute(''' 
-    UPDATE dosen 
+    UPDATE shelf_one 
     SET 
-        nama = %s,
-        univ = %s,
-        jurusan = %s
+        title = %s,
+        author = %s,
+        published = %s
     WHERE
-        dosen_id = %s;
-    ''',(nama,univ,jurusan,id))
+        book_id = %s;
+    ''',(title,author,published,id))
     
     mysql.commit()
     cursor.close()
-    flash('Data updated successfully','success')
-    return redirect(url_for('dosen'))
+    flash('Data berhasil diperbarui','success')
+    return redirect(url_for('dashboard'))
 
-  return render_template('dosen.html')
+  return render_template('dashboard.html')
 
 
-@app.route('/dosen/delete/<int:id>', methods=['GET'])
-def deletedosen(id):
+@app.route('/book/delete/<int:id>', methods=['GET'])
+def deleteBook(id):
   if request.method == 'GET':
     cursor = mysql.cursor()
     cursor.execute('''
     DELETE 
-    FROM dosen 
-    WHERE dosen_id=%s''', (id, ))
+    FROM shelf_one 
+    WHERE book_id=%s''', (id, ))
     mysql.commit()
     cursor.close()
+    flash('Data berhasil dihapus', 'success')
+    return redirect(url_for('dashboard'))
 
-    return redirect(url_for('dosen'))
+  return render_template('dashboard.html')
 
-  return render_template('dosen.html')
+@app.route('/book/show/<int:id>', methods=['GET'])
+def showBook(id):
+  if request.method == 'GET':
+    cursor = mysql.cursor()
+    cursor.execute('''
+    SELECT * 
+    FROM shelf_one 
+    WHERE book_id=%s''', (id, ))
+    book = cursor.fetchone()
+    cursor.close()
 
+    pdf = book[4].decode('UTF-8')
+
+    return render_template('book/show.html', pdf=pdf)
 
 if __name__ == '__main__':
   app.run(debug=True)
